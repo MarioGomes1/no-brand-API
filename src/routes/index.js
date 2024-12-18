@@ -8,7 +8,7 @@ const router = express.Router();
 router.use("/products", productRoutes);
 router.use("/cart", cartRoutes);
 router.use("/user", userRoutes);
-router.use("/register", authRoutes);
+router.use("/auth", authRoutes);
 
 // Example route for health check
 router.get("/health", (req, res) => {
