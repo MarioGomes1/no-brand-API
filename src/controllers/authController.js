@@ -22,16 +22,28 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { username } = req.body;
-  //Check if email exists in db
-  //should the check be done here or in the sql query?
-  //if so, compare the hashedpassword vs the req.body.passeword for a match
+  const { username, password } = req.body;
 
-  const accessToken = jwt.sign(
-    { name: username },
-    process.env.ACCESS_TOKEN_SECRET
-  );
-  res.json(accessToken);
+  try {
+    const user = await modelGetUser(username);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const accessToken = jwt.sign(
+      { name: username },
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
+    const { password, ...rest } = user;
+    res.json({ ...rest, accessToken });
+  } catch (err) {
+    res.status(403).json({ error: err });
+  }
 };
 
 //TODO MOVE TO MIDDLEWARE
