@@ -35,19 +35,17 @@ const loginUser = async (req, res) => {
     }
 
     const accessToken = jwt.sign(
-      { name: username },
+      { id: user.id },
       process.env.ACCESS_TOKEN_SECRET
     );
 
-    const { password, ...rest } = user;
-    res.json({ ...rest, accessToken });
+    // const { password, ...rest } = user;
+    res.json({ user, accessToken });
   } catch (err) {
     res.status(403).json({ error: err });
   }
 };
 
 //TODO MOVE TO MIDDLEWARE
-const verifyToken = (req, res, next) => {
-  const header = res.headers;
-};
+
 export { registerUser, loginUser };

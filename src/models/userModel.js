@@ -9,6 +9,7 @@ const modelGetUser = async (username) => {
         `,
     [username]
   );
+  console.log(user.rows[0]);
   return user.rows[0];
 };
 const modelUpdateUser = async () => {};
