@@ -18,7 +18,7 @@ JOIN size s ON s.size_name = $3
 WHERE p.product_name = $4
 ON CONFLICT (user_id, product_id, size_id)
   DO UPDATE
-    SET quantity = cart.quantity + EXCLUDED.quantity;`,
+    SET quantity = EXCLUDED.quantity;`,
       [userId, quantity, selectedSize, title]
     );
   });
@@ -31,7 +31,8 @@ const modelDeleteCart = async () => {};
 const modelGetCart = async (userId) => {
   const cart = await pool.query(
     `
-       SELECT description, price, product_name,image, c.user_id, c.quantity, s.size_name
+       SELECT description, price, product_name  as title,image, c.user_id, c.quantity, s.size_name
+       as "selectedSize"
         FROM product p
         JOIN cart c ON c.product_id = p.product_id 
         JOIN size s ON s.size_id=c.size_id
